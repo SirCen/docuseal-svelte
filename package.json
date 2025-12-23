@@ -31,6 +31,7 @@
 		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.29.8",
 		"@sveltejs/adapter-auto": "^7.0.0",
 		"@sveltejs/kit": "^2.49.1",
 		"@sveltejs/package": "^2.5.7",
@@ -42,6 +43,13 @@
 		"vite": "^7.2.6"
 	},
 	"keywords": [
-		"svelte"
+		"svelte",
+		"docuseal",
+		"document",
+		"signature",
+		"signing",
+		"pdf",
+		"component",
+		"library"
 	]
 }
