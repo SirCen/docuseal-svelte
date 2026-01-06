@@ -1,6 +1,6 @@
 # DocuSeal Svelte
 
-A SvelteKit component library for integrating DocuSeal electronic signatures into your Svelte applications.
+A Svelte component library for integrating DocuSeal electronic signatures into your Svelte applications.
 
 ## Installation
 
@@ -18,6 +18,13 @@ npm install docuseal-svelte
 <DocuSealForm src="<YOUR_DOCUSEAL_FORM_SRC>" />
 <DocuSealFormBuilder src="<YOUR_DOCUSEAL_FORM_SRC>" token="<YOUR_DOCUSEAL_TOKEN>" />
 ```
+
+## Compatibility
+
+This package supports:
+
+- Svelte 4.x
+- Svelte 5.x
 
 ## How to Contribute
 

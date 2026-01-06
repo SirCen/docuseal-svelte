@@ -1,5 +1,3 @@
-// src/lib/utils/docuseal.ts
-
 /**
  * Validates if a URL is a valid DocuSeal URL
  */
