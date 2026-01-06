@@ -1,6 +1,6 @@
 {
 	"name": "docuseal-svelte",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Docuseal Svelte component library for document signing and management.",
 	"license": "MIT",
 	"repository": {
