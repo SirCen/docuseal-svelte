@@ -57,6 +57,7 @@
   export let onInit: ((detail: any) => void) | undefined = undefined
   export let onDecline: ((detail: any) => void) | undefined = undefined
   export let onLoad: ((detail: any) => void) | undefined = undefined
+  export let onError: ((detail: any) => void) | undefined = undefined
 
   let el: HTMLElement | null = null
 
@@ -81,12 +82,15 @@
     const handleDecline = (e: Event) =>
       onDecline && onDecline((e as CustomEvent).detail)
     const handleLoad = (e: Event) => onLoad && onLoad((e as CustomEvent).detail)
+    const handleError = (e: Event) =>
+      onError && onError((e as CustomEvent).detail)
 
     if (el) {
       el.addEventListener("completed", handleCompleted)
       el.addEventListener("init", handleInit)
       el.addEventListener("declined", handleDecline)
       el.addEventListener("load", handleLoad)
+      el.addEventListener("error", handleError)
     }
 
     return () => {
@@ -95,6 +99,7 @@
         el.removeEventListener("init", handleInit)
         el.removeEventListener("declined", handleDecline)
         el.removeEventListener("load", handleLoad)
+        el.removeEventListener("error", handleError)
       }
     }
   })
