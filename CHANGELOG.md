@@ -1,5 +1,11 @@
 # docuseal-svelte
 
+## 0.0.4
+
+### Patch Changes
+
+- d813596: add error handler
+
 ## 0.0.3
 
 ### Patch Changes
