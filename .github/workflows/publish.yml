@@ -1,9 +1,7 @@
 name: Publish
 on:
-    workflow_run:
-        workflows: [CI]
+    push:
         branches: [main]
-        types: [completed]
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -14,7 +12,6 @@ permissions:
 
 jobs:
     publish:
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
@@ -27,6 +24,18 @@ jobs:
             - run: npm install -g npm@latest
 
             - run: npm ci
+
+            - name: Check the trusted publishing preconditions
+              run: |
+                  npm --version
+                  if [ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then
+                    echo "OIDC token endpoint is available"
+                  else
+                    echo "OIDC token endpoint is MISSING - id-token: write was not granted"
+                    exit 1
+                  fi
+
+            - run: npm test
 
             - name: Create Release Pull Request or Publish
               uses: changesets/action@v1

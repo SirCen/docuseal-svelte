@@ -5,7 +5,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/SirCen/docuseal-svelte.git"
+		"url": "git+https://github.com/SirCen/docuseal-svelte.git"
 	},
 	"scripts": {
 		"dev": "vite dev",
