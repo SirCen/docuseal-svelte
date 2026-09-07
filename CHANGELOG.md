@@ -1,5 +1,17 @@
 # docuseal-svelte
 
+## 0.1.1
+
+### Patch Changes
+
+- 41daab8: `isValidDocuSealUrl` now accepts `docuseal.eu`, DocuSeal's EU Cloud. Only the US Cloud
+  (`docuseal.com`) and `docuseal.co` were recognised, so signing links for EU-hosted accounts were
+  rejected as invalid.
+- 41daab8: Remove seven unused helpers from the shipped bundle: `isDocuSealMessage`, `parseDocuSealEvent`,
+  `createDocuSealIframe`, `sendToDocuSeal`, `calculateIframeHeight`, `retryOperation` and
+  `prefetchDocuSeal`. None were re-exported from the package entry point, and the `exports` map has no
+  subpath entry, so none of them were reachable by consumers. The public API is unchanged.
+
 ## 0.1.0
 
 ### Minor Changes
