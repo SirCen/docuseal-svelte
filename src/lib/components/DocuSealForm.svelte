@@ -1,6 +1,6 @@
 <script lang="ts">
   import {onMount} from "svelte"
-  import type {DocuSealFormField} from "../types/index.ts"
+  import type {DocuSealFormField} from "../types/index.js"
 
   export let src: string = ""
   export let token: string = ""
@@ -77,32 +77,25 @@
       document.head.appendChild(script)
     }
 
-    const handleCompleted = (e: Event) =>
-      onComplete && onComplete((e as CustomEvent).detail)
-    const handleInit = (e: Event) => onInit && onInit((e as CustomEvent).detail)
-    const handleDecline = (e: Event) =>
-      onDecline && onDecline((e as CustomEvent).detail)
-    const handleLoad = (e: Event) => onLoad && onLoad((e as CustomEvent).detail)
-    const handleError = (e: Event) =>
-      onError && onError((e as CustomEvent).detail)
-
-    if (el) {
-      el.addEventListener("completed", handleCompleted)
-      el.addEventListener("init", handleInit)
-      el.addEventListener("declined", handleDecline)
-      el.addEventListener("load", handleLoad)
-      el.addEventListener("error", handleError)
+    const handlers: Record<string, ((detail: any) => void) | undefined> = {
+      completed: onComplete,
+      init: onInit,
+      declined: onDecline,
+      load: onLoad,
+      error: onError,
     }
 
-    return () => {
-      if (el) {
-        el.removeEventListener("completed", handleCompleted)
-        el.removeEventListener("init", handleInit)
-        el.removeEventListener("declined", handleDecline)
-        el.removeEventListener("load", handleLoad)
-        el.removeEventListener("error", handleError)
-      }
-    }
+    const element = el
+    if (!element) return
+
+    const removers = Object.entries(handlers).map(([eventName, handler]) => {
+      const listener = (e: Event) => handler && handler((e as CustomEvent).detail)
+
+      element.addEventListener(eventName, listener)
+      return () => element.removeEventListener(eventName, listener)
+    })
+
+    return () => removers.forEach((remove) => remove())
   })
 </script>
 

@@ -10,7 +10,9 @@ describe("isValidDocuSealUrl", () => {
   it.each([
     "https://docuseal.com/s/abc",
     "https://docuseal.co/s/abc",
+    "https://docuseal.eu/s/abc",
     "https://app.docuseal.com/d/abc",
+    "https://app.docuseal.eu/d/abc",
   ])("accepts %s", (url) => {
     expect(isValidDocuSealUrl(url)).toBe(true)
   })

@@ -14,13 +14,13 @@ jobs:
     publish:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v5
               with:
                   node-version: 24
 
-            # Trusted publishing needs npm 11.5.1 or newer, which is not
-            # guaranteed by the npm bundled with the Node version above.
+            # The npm bundled with the Node version above is not guaranteed
+            # to be new enough for trusted publishing or `npm stage`.
             - run: npm install -g npm@latest
 
             - run: npm ci
@@ -48,9 +48,10 @@ jobs:
             - name: Stage the release for manual approval
               if: steps.changesets.outputs.hasChangesets == 'false'
               run: |
+                  package=$(node -p "require('./package.json').name")
                   version=$(node -p "require('./package.json').version")
-                  if npm view "docuseal-svelte@$version" version > /dev/null 2>&1; then
-                    echo "docuseal-svelte@$version is already published, nothing to stage"
+                  if npm view "$package@$version" version > /dev/null 2>&1; then
+                    echo "$package@$version is already published, nothing to stage"
                     exit 0
                   fi
                   npm run release

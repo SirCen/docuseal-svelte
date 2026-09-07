@@ -122,7 +122,6 @@
       const scriptId = "docuseal-builder-script"
       const scriptSrc = `https://${host}/js/builder.js`
 
-      // Check if script already exists
       const existingScript = document.getElementById(scriptId)
       if (existingScript) {
         resolve()
@@ -148,50 +147,26 @@
   }
 
   const setupEventListeners = (element: HTMLElement): (() => void) => {
-    const handleLoad = (e: Event) => {
-      if (onLoad && e instanceof CustomEvent) {
-        onLoad(e.detail)
+    const handlers: Record<string, ((detail: any) => void) | undefined> = {
+      load: onLoad,
+      upload: onUpload,
+      send: onSend,
+      save: onSave,
+      change: onChange,
+    }
+
+    const removers = Object.entries(handlers).map(([eventName, handler]) => {
+      const listener = (e: Event) => {
+        if (handler && e instanceof CustomEvent) {
+          handler(e.detail)
+        }
       }
-    }
 
-    const handleUpload = (e: Event) => {
-      if (onUpload && e instanceof CustomEvent) {
-        onUpload(e.detail)
-      }
-    }
+      element.addEventListener(eventName, listener)
+      return () => element.removeEventListener(eventName, listener)
+    })
 
-    const handleSend = (e: Event) => {
-      if (onSend && e instanceof CustomEvent) {
-        onSend(e.detail)
-      }
-    }
-
-    const handleSave = (e: Event) => {
-      if (onSave && e instanceof CustomEvent) {
-        onSave(e.detail)
-      }
-    }
-
-    const handleChange = (e: Event) => {
-      if (onChange && e instanceof CustomEvent) {
-        onChange(e.detail)
-      }
-    }
-
-    element.addEventListener("load", handleLoad)
-    element.addEventListener("upload", handleUpload)
-    element.addEventListener("send", handleSend)
-    element.addEventListener("save", handleSave)
-    element.addEventListener("change", handleChange)
-
-    // Return cleanup function
-    return () => {
-      element.removeEventListener("load", handleLoad)
-      element.removeEventListener("upload", handleUpload)
-      element.removeEventListener("send", handleSend)
-      element.removeEventListener("save", handleSave)
-      element.removeEventListener("change", handleChange)
-    }
+    return () => removers.forEach((remove) => remove())
   }
 
   const asDocuSealError = (error: unknown): DocuSealError =>
