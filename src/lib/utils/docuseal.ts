@@ -1,4 +1,4 @@
-const DOCUSEAL_DOMAINS = ["docuseal.co", "docuseal.com"]
+const DOCUSEAL_DOMAINS = ["docuseal.co", "docuseal.com", "docuseal.eu"]
 
 export function isValidDocuSealUrl(url: string): boolean {
   try {
