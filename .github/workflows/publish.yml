@@ -43,3 +43,17 @@ jobs:
                   publish: npm run release
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            # npm swallows every trusted publishing failure and falls back to
+            # an unauthenticated publish, so the reason only ever appears as a
+            # verbose "oidc" line in the debug log. Only those lines are
+            # printed, to keep credentials out of the job output.
+            - name: Explain the trusted publishing failure
+              if: failure()
+              run: |
+                  for log in "$HOME"/.npm/_logs/*-debug-0.log; do
+                    if grep -qiE "oidc|token exchange" "$log"; then
+                      echo "===== $log ====="
+                      grep -iE "oidc|token exchange" "$log"
+                    fi
+                  done
