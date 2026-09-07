@@ -1,11 +1,14 @@
 /**
  * Validates if a URL is a valid DocuSeal URL
  */
+const DOCUSEAL_DOMAINS = ['docuseal.co', 'docuseal.com'];
+
 export function isValidDocuSealUrl(url: string): boolean {
   try {
-    const parsed = new URL(url);
-    return parsed.hostname.includes('docuseal.co') || 
-           parsed.hostname.includes('docuseal.com');
+    const { hostname } = new URL(url);
+    return DOCUSEAL_DOMAINS.some(
+      (domain) => hostname === domain || hostname.endsWith(`.${domain}`)
+    );
   } catch {
     return false;
   }

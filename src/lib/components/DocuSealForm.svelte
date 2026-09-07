@@ -37,6 +37,7 @@
   export let withFieldNames: boolean = true
   export let withFieldPlaceholder: boolean = false
   export let withDownloadButton: boolean = true
+  export let onlyRequiredFields: boolean = false
   export let allowToResubmit: boolean = true
   export let allowTypedSignature: boolean = true
   export let signature: string = ""
@@ -115,7 +116,7 @@
   data-external-id={externalId || applicationKey}
   data-expand={booleanToAttr(expand)}
   data-minimize={booleanToAttr(minimize)}
-  data-order-as-on-page={orderAsOnPage}
+  data-order-as-on-page={booleanToAttr(orderAsOnPage)}
   data-preview={booleanToAttr(preview)}
   data-dry-run={booleanToAttr(dryRun)}
   data-go-to-last={booleanToAttr(goToLast)}
@@ -129,6 +130,7 @@
   data-with-field-names={booleanToAttr(withFieldNames)}
   data-with-field-placeholder={booleanToAttr(withFieldPlaceholder)}
   data-with-download-button={booleanToAttr(withDownloadButton)}
+  data-only-required-fields={booleanToAttr(onlyRequiredFields)}
   data-allow-to-resubmit={booleanToAttr(allowToResubmit)}
   data-allow-typed-signature={booleanToAttr(allowTypedSignature)}
   data-signature={signature}
