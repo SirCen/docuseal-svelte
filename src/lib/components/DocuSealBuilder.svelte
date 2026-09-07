@@ -14,7 +14,12 @@
     withTitle = true,
     withDocumentsList = true,
     withFieldsList = true,
+    withFieldsDetection = false,
     withFieldPlaceholder = false,
+    withDynamicDocuments = false,
+    withPrefillable = false,
+    withCustomFieldsTab = false,
+    withRevisions = false,
     onlyDefinedFields = false,
     preview = false,
     previewMode = false,
@@ -27,6 +32,7 @@
     fields = [],
     submitters = [],
     requiredFields = [],
+    dateFormats = [],
     i18n = {},
     withSignYourselfButton = true,
     withUploadButton = true,
@@ -45,6 +51,7 @@
     onSend = undefined,
     onSave = undefined,
     onChange = undefined,
+    onError = undefined,
   }: {
     token: string
     host?: string
@@ -53,7 +60,12 @@
     withTitle?: boolean
     withDocumentsList?: boolean
     withFieldsList?: boolean
+    withFieldsDetection?: boolean
     withFieldPlaceholder?: boolean
+    withDynamicDocuments?: boolean
+    withPrefillable?: boolean
+    withCustomFieldsTab?: boolean
+    withRevisions?: boolean
     onlyDefinedFields?: boolean
     preview?: boolean
     previewMode?: boolean
@@ -66,6 +78,7 @@
     fields?: DocuSealBuilderField[]
     submitters?: DocuSealBuilderSubmitter[]
     requiredFields?: DocuSealBuilderField[]
+    dateFormats?: string[]
     i18n?: object
     withSignYourselfButton?: boolean
     withUploadButton?: boolean
@@ -84,6 +97,7 @@
     onSend?: ((detail: any) => void) | undefined
     onSave?: ((detail: any) => void) | undefined
     onChange?: ((detail: any) => void) | undefined
+    onError?: ((error: DocuSealError) => void) | undefined
   } = $props()
 
   let el = $state<HTMLElement | null>(null)
@@ -125,8 +139,8 @@
         reject(
           new DocuSealError(
             `Failed to load DocuSeal builder script from ${scriptSrc}`,
-            "SCRIPT_LOAD_ERROR"
-          )
+            "SCRIPT_LOAD_ERROR",
+          ),
         )
 
       document.head.appendChild(script)
@@ -180,9 +194,17 @@
     }
   }
 
+  const asDocuSealError = (error: unknown): DocuSealError =>
+    error instanceof DocuSealError
+      ? error
+      : new DocuSealError(
+          "Failed to initialize DocuSeal Builder",
+          "INIT_ERROR",
+          error,
+        )
+
   onMount(() => {
     let cleanup: (() => void) | undefined
-
     ;(async () => {
       try {
         validateHost(host)
@@ -191,15 +213,12 @@
           cleanup = setupEventListeners(el)
         }
       } catch (error) {
-        console.error("DocuSeal Builder initialization error:", error)
-        if (error instanceof DocuSealError) {
-          throw error
+        const initError = asDocuSealError(error)
+        if (onError) {
+          onError(initError)
+        } else {
+          console.error("DocuSeal Builder initialization error:", initError)
         }
-        throw new DocuSealError(
-          "Failed to initialize DocuSeal Builder",
-          "INIT_ERROR",
-          error
-        )
       }
     })()
 
@@ -213,7 +232,7 @@
   bind:this={el}
   data-token={token}
   data-preview={booleanToAttr(preview || previewMode)}
-  data-input-mode={inputMode}
+  data-input-mode={booleanToAttr(inputMode)}
   data-language={language}
   data-autosave={booleanToAttr(autosave)}
   data-send-button-text={sendButtonText}
@@ -224,6 +243,7 @@
   data-fields={JSON.stringify(fields)}
   data-submitters={JSON.stringify(submitters)}
   data-required-fields={JSON.stringify(requiredFields)}
+  data-date-formats={dateFormats.join(",")}
   data-i18n={JSON.stringify(i18n)}
   data-custom-button-title={customButton.title}
   data-custom-button-url={customButton.url}
@@ -232,9 +252,14 @@
   data-with-recipients-button={booleanToAttr(withRecipientsButton)}
   data-with-send-button={booleanToAttr(withSendButton)}
   data-with-documents-list={booleanToAttr(withDocumentsList)}
+  data-with-dynamic-documents={booleanToAttr(withDynamicDocuments)}
   data-with-fields-list={booleanToAttr(withFieldsList)}
+  data-with-fields-detection={booleanToAttr(withFieldsDetection)}
   data-with-field-placeholder={booleanToAttr(withFieldPlaceholder)}
+  data-with-prefillable={booleanToAttr(withPrefillable)}
+  data-with-custom-fields-tab={booleanToAttr(withCustomFieldsTab)}
   data-with-signature-id={booleanToAttr(withSignatureId)}
+  data-with-revisions={booleanToAttr(withRevisions)}
   data-with-title={booleanToAttr(withTitle)}
   data-only-defined-fields={booleanToAttr(onlyDefinedFields)}
   data-with-upload-button={booleanToAttr(withUploadButton)}

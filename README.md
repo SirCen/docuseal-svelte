@@ -26,6 +26,18 @@ This package supports:
 - Svelte 4.x
 - Svelte 5.x
 
+## Development
+
+```bash
+npm test        # run the test suite once
+npm run test:watch  # re-run tests as you edit
+npm run check   # type-check the library and the tests
+```
+
+Tests live in the top-level `tests/` directory rather than beside the source, because
+`svelte-package` copies everything under `src/lib` into `dist`. `npm run prepack` fails if a
+test file ever reaches the built package.
+
 ## How to Contribute
 
 Contributions are welcome! Please fork the repository and create a pull request with your changes. Make sure to create a changeset for any significant updates.

@@ -70,6 +70,7 @@ export interface DocuSealFormProps {
   withDownloadButton?: boolean
   withSendCopyButton?: boolean
   withCompleteButton?: boolean
+  onlyRequiredFields?: boolean
   allowToResubmit?: boolean
   allowTypedSignature?: boolean
   signature?: string
