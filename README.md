@@ -40,7 +40,8 @@ test file ever reaches the built package.
 
 ## How to Contribute
 
-Contributions are welcome! Please fork the repository and create a pull request with your changes. Make sure to create a changeset for any significant updates.
+Contributions are welcome. Fork the repository, open a pull request against `main`, and see
+[CONTRIBUTING.md](CONTRIBUTING.md) for the local checks and the changeset step.
 
 ## License
 
