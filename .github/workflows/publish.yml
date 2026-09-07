@@ -10,29 +10,27 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 permissions:
     contents: write
     pull-requests: write
+    id-token: write
 
 jobs:
     publish:
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
               with:
                   node-version: 24
 
-            - run: npm install
+            # Trusted publishing needs npm 11.5.1 or newer, which is not
+            # guaranteed by the npm bundled with the Node version above.
+            - run: npm install -g npm@latest
+
+            - run: npm ci
+
             - name: Create Release Pull Request or Publish
-              id: changesets
               uses: changesets/action@v1
+              with:
+                  publish: npm run release
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-              with:
-                  publish: npm run build
-            # Publish to NPM
-            - name: Publish to NPM
-              run: |
-                  npm publish --access public
-              env:
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
