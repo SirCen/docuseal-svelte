@@ -37,9 +37,34 @@ jobs:
 
             - run: npm test
 
-            - name: Create Release Pull Request or Publish
+            - name: Create Release Pull Request
+              id: changesets
               uses: changesets/action@v1
-              with:
-                  publish: npm run release
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            # Staging uploads the tarball but does not release it. Approve or
+            # reject it from the npm website, or with `npm stage approve <id>`.
+            - name: Stage the release for manual approval
+              if: steps.changesets.outputs.hasChangesets == 'false'
+              run: |
+                  version=$(node -p "require('./package.json').version")
+                  if npm view "docuseal-svelte@$version" version > /dev/null 2>&1; then
+                    echo "docuseal-svelte@$version is already published, nothing to stage"
+                    exit 0
+                  fi
+                  npm run release
+
+            # npm swallows every trusted publishing failure and falls back to
+            # an unauthenticated request, so the reason only ever appears as a
+            # verbose "oidc" line in the debug log. Only those lines are
+            # printed, to keep credentials out of the job output.
+            - name: Explain the trusted publishing failure
+              if: failure()
+              run: |
+                  for log in "$HOME"/.npm/_logs/*-debug-0.log; do
+                    if grep -qiE "oidc|token exchange" "$log"; then
+                      echo "===== $log ====="
+                      grep -iE "oidc|token exchange" "$log"
+                    fi
+                  done
